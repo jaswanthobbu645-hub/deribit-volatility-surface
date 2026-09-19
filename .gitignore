@@ -1,0 +1,33 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.pytest_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Generated artifacts (do not commit)
+repo_structure.txt
+verify*.py
+finalize*.py
+update_paths.py
+
+# Temporary
+*.tmp
+*_checkpoint.csv
+checkpoint*.csv
