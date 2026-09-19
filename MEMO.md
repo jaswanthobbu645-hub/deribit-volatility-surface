@@ -132,7 +132,7 @@ PnL Attribution (BTC in-sample avg):
 4. Slippage assumption: 1% per side
 5. DVOL-Skew correlation only 23 overlapping days
 
-## 6. Deliverables
+## 5.5 Transaction Cost SensitivityThe strategy was re-run at 4 different cost levels (round-trip cost as % of option premium). Results:======================================================================TRANSACTION COST SENSITIVITY======================================================================BTC:Cost (RT)    Trades   Total Ret    Avg Ret      Win Rate ------------------------------------------------------------1.00%        2            -11.72%     -5.8616%      0.00%2.00%        2            -13.72%     -6.8616%      0.00%3.00%        2            -15.72%     -7.8616%      0.00%4.00%        2            -17.72%     -8.8616%      0.00%ETH:Cost (RT)    Trades   Total Ret    Avg Ret      Win Rate ------------------------------------------------------------1.00%        1             -2.33%     -2.3281%      0.00%2.00%        1             -3.33%     -3.3281%      0.00%3.00%        1             -4.33%     -4.3281%      0.00%4.00%        1             -5.33%     -5.3281%      0.00%**Interpretation:** The strategy yields negative returns at all tested cost levels (1%-4% round-trip). Even at the lowest cost of 1%, the BTC strategy returns -11.72% and ETH -2.33%. This indicates that the strategy's edge is insufficient to cover transaction costs, and the previously reported in-sample return of +15.61% (which assumed 2% round-trip) is not robust to realistic cost assumptions.## 6. Deliverables
 
 - **Code:** src/data/, src/features/, src/strategy/
 - **Data:** data/processed/, data/trades/

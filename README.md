@@ -12,4 +12,12 @@ A production-grade options analytics pipeline for Deribit BTC and ETH options, c
 
 4. **Skew mean-reversion works on BTC.** +15.61% net return, 57% win rate, 7 trades over 3 months.
 
+## Limitations
+
+ - **Sample size:** The in-sample backtest has only 7 BTC trades. The 57% win rate has a 95% confidence interval of approximately ±30% — the true win rate could be anywhere from 27% to 87%. Walk-forward OOS has only 2 trades. This is not statistically significant.
+ - **Data window:** Deribit's free API caps option history at ~90 days. Our 84-day window covers one regime (Jun-Sep 2026). Extrapolating to other regimes is not validated.
+ - **Slippage assumption:** 1% per side is modeled. At 2x slippage (2% per side), the strategy's edge would be materially reduced. See sensitivity table in MEMO.md.
+ - **No second-window validation:** A proper out-of-sample test on a different quarter/regime has not been performed due to data limits.
+ 
+
 ## Repository Structure
