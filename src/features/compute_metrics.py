@@ -79,8 +79,8 @@ def compute_daily_metrics(surface_file, asset_name):
     return daily_df
 
 
-btc_daily = compute_daily_metrics('os.path.join(PROCESSED_DIR, 'BTC_surface_1y.csv')', 'BTC')
-eth_daily = compute_daily_metrics('os.path.join(PROCESSED_DIR, 'ETH_surface_1y.csv')', 'ETH')
+btc_daily = compute_daily_metrics(os.path.join(PROCESSED_DIR, 'BTC_surface_1y.csv'), 'BTC')
+eth_daily = compute_daily_metrics(os.path.join(PROCESSED_DIR, 'ETH_surface_1y.csv'), 'ETH')
 
 # Chart
 btc_daily['date'] = pd.to_datetime(btc_daily['date'])
@@ -100,14 +100,14 @@ axes[1].set_ylabel('Butterfly')
 axes[1].set_xlabel('Date')
 axes[1].grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('os.path.join(CHARTS_DIR, 'term_structure_butterfly.png')', dpi=300)
-print("  ✅ Saved os.path.join(CHARTS_DIR, 'term_structure_butterfly.png')")
+plt.savefig(os.path.join(CHARTS_DIR, 'term_structure_butterfly.png'), dpi=300)
+print(f"  ✅ Saved {os.path.join(CHARTS_DIR, 'term_structure_butterfly.png')}")
 
 # ==========================================================
 # TASK 2: 3D SURFACE
 # ==========================================================
 print("\n[2/4] Building 3D surface...")
-df = pd.read_csv('os.path.join(PROCESSED_DIR, 'BTC_surface_1y.csv')')
+df = pd.read_csv(os.path.join(PROCESSED_DIR, 'BTC_surface_1y.csv'))
 df['date'] = pd.to_datetime(df['datetime']).dt.date
 recent = sorted(df['date'].unique())[-1]
 day = df[df['date'] == recent].copy()
@@ -125,15 +125,15 @@ ax.set_zlabel('Implied Volatility')
 ax.set_title(f'BTC Volatility Surface — {recent}')
 plt.colorbar(sc, ax=ax, label='IV', shrink=0.6)
 plt.tight_layout()
-plt.savefig('os.path.join(CHARTS_DIR, 'surface_3d.png')', dpi=300)
-print(f"  ✅ Saved os.path.join(CHARTS_DIR, 'surface_3d.png') ({len(surface)} points)")
+plt.savefig(os.path.join(CHARTS_DIR, 'surface_3d.png'), dpi=300)
+print(f"  ✅ Saved {os.path.join(CHARTS_DIR, 'surface_3d.png')} ({len(surface)} points)")
 
 # ==========================================================
 # TASK 3: CRYPTO VS EQUITY CHART
 # ==========================================================
 print("\n[3/4] Building crypto vs equity chart...")
-btc = pd.read_csv('os.path.join(PROCESSED_DIR, 'BTC_rr_all_expiries.csv')', parse_dates=['date'])
-eth = pd.read_csv('os.path.join(PROCESSED_DIR, 'ETH_rr_all_expiries.csv')', parse_dates=['date'])
+btc = pd.read_csv(os.path.join(PROCESSED_DIR, 'BTC_rr_all_expiries.csv'), parse_dates=['date'])
+eth = pd.read_csv(os.path.join(PROCESSED_DIR, 'ETH_rr_all_expiries.csv'), parse_dates=['date'])
 btc_d = btc.groupby('date')['rr'].mean()
 eth_d = eth.groupby('date')['rr'].mean()
 
@@ -165,14 +165,14 @@ axes[1, 1].text(0.1, 0.5,
                 fontsize=12, family='monospace')
 axes[1, 1].set_title('Summary Statistics')
 plt.tight_layout()
-plt.savefig('os.path.join(CHARTS_DIR, 'crypto_vs_equity.png')', dpi=300)
+plt.savefig(os.path.join(CHARTS_DIR, 'crypto_vs_equity.png'), dpi=300)
 print("  ✅ Saved os.path.join(CHARTS_DIR, 'crypto_vs_equity.png')")
 
 # ==========================================================
 # TASK 4: ETH FED EVENT STUDY
 # ==========================================================
 print("\n[4/4] Building ETH Fed event study...")
-eth_dvol = pd.read_csv('os.path.join(PROCESSED_DIR, 'dvol_ETH_1y.csv')', parse_dates=['date'])
+eth_dvol = pd.read_csv(os.path.join(PROCESSED_DIR, 'dvol_ETH_1y.csv'), parse_dates=['date'])
 fed_dates = ['2025-10-29', '2025-12-17', '2026-01-28', '2026-03-18',
              '2026-04-29', '2026-06-17', '2026-07-29', '2026-09-16']
 changes = []
@@ -194,7 +194,7 @@ ax.set_ylabel('ETH DVOL (%)')
 ax.legend(fontsize=8, loc='upper left', ncol=2);
 ax.grid(True, alpha=0.3)
 plt.tight_layout()
-plt.savefig('os.path.join(CHARTS_DIR, 'eth_fed_study.png')', dpi=300)
+plt.savefig(os.path.join(CHARTS_DIR, 'eth_fed_study.png'), dpi=300)
 print(f"  ✅ Saved os.path.join(CHARTS_DIR, 'eth_fed_study.png')")
 print(f"  ETH Fed changes: {[round(c, 2) for c in changes]}")
 print(

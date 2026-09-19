@@ -126,8 +126,8 @@ axes[1, 1].set_ylabel('DVOL Change (%)')
 axes[1, 1].grid(True, alpha=0.3, axis='y')
 
 plt.tight_layout()
-plt.savefig('os.path.join(CHARTS_DIR, 'event_study_final.png')', dpi=300)
-print("\n✅ Saved os.path.join(CHARTS_DIR, 'event_study_final.png')")
+plt.savefig(os.path.join(CHARTS_DIR, 'event_study_final.png'), dpi=300)
+print(f"\n✅ Saved {os.path.join(CHARTS_DIR, 'event_study_final.png')}")
 
 # ============================================================
 # STEP 4: SUMMARY STATS

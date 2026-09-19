@@ -1,4 +1,4 @@
-.PHONY: install fetch-live full-analysis backtest charts clean
+.PHONY: install fetch-live fetch-historical fetch-dvol full-analysis backtest cost-sensitivity reproduce clean
 
 install:
 	pip install -r requirements.txt
@@ -20,6 +20,13 @@ full-analysis:
 backtest:
 	python src/strategy/walk_forward.py
 
+cost-sensitivity:
+	python src/strategy/cost_sensitivity.py
+
+reproduce: fetch-historical fetch-dvol full-analysis backtest cost-sensitivity
+	@echo "Reproduction complete. Check charts/ and data/processed/"
+
 clean:
-	rm -rf __pycache__ .pytest_cache
 	find . -name "*.pyc" -delete
+	find . -name "__pycache__" -type d -exec rm -rf {} +
+	rm -rf .pytest_cache

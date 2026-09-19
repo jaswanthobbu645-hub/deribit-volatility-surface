@@ -19,9 +19,9 @@ CHARTS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "charts")
 # ==============================
 BASE_URL = "https://www.deribit.com/api/v2/public"
 RISK_FREE_RATE = 0.0
-CHECKPOINT_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "historical_scrape")
-OUTPUT_FILE = os.path.join(PROCESSED_DIR, 'BTC_surface_1y.csv')
-CHECKPOINT_FILE = os.path.join(CHECKPOINT_DIR, 'checkpoint.csv')
+CHECKPOINT_DIR = "C:/Users/jaswa/deribit_project/historical_scrape"
+OUTPUT_FILE = "C:/Users/jaswa/deribit_project/os.path.join(PROCESSED_DIR, 'ETH_surface_1y.csv')"
+CHECKPOINT_FILE = "C:/Users/jaswa/deribit_project/historical_scrape/checkpoint_eth.csv"
 CHECKPOINT_INTERVAL = 100
 API_SLEEP = 0.1
 
@@ -30,12 +30,10 @@ API_SLEEP = 0.1
 # BLACK-SCHOLES FUNCTIONS
 # ==============================
 def norm_cdf(x):
-    """Cumulative distribution function for standard normal distribution."""
     return (1.0 + math.erf(x / math.sqrt(2.0))) / 2.0
 
 
 def black_scholes_price(S, K, T, r, sigma, option_type):
-    """Calculate Black-Scholes price for European call or put."""
     if T <= 0:
         if option_type == 'call':
             return max(S - K, 0)
@@ -44,14 +42,12 @@ def black_scholes_price(S, K, T, r, sigma, option_type):
     d1 = (math.log(S / K) + (r + sigma ** 2 / 2) * T) / (sigma * math.sqrt(T))
     d2 = d1 - sigma * math.sqrt(T)
     if option_type == 'call':
-        price = S * norm_cdf(d1) - K * math.exp(-r * T) * norm_cdf(d2)
+        return S * norm_cdf(d1) - K * math.exp(-r * T) * norm_cdf(d2)
     else:
-        price = K * math.exp(-r * T) * norm_cdf(-d2) - S * norm_cdf(-d1)
-    return price
+        return K * math.exp(-r * T) * norm_cdf(-d2) - S * norm_cdf(-d1)
 
 
 def black_scholes_delta(S, K, T, r, sigma, option_type):
-    """Calculate Black-Scholes delta for European call or put."""
     if T <= 0:
         if option_type == 'call':
             return 1.0 if S > K else 0.0
@@ -65,7 +61,6 @@ def black_scholes_delta(S, K, T, r, sigma, option_type):
 
 
 def implied_volatility(market_price, S, K, T, r, option_type, tolerance=1e-5, max_iterations=100):
-    """Calculate implied volatility using Newton-Raphson method."""
     sigma = 0.5
     for _ in range(max_iterations):
         price = black_scholes_price(S, K, T, r, sigma, option_type)
@@ -83,10 +78,9 @@ def implied_volatility(market_price, S, K, T, r, option_type, tolerance=1e-5, ma
 
 
 # ==============================
-# DERIBIT API FUNCTIONS
+# DERIBIT API
 # ==============================
 def fetch_json(url, params=None):
-    """Fetch JSON from URL with error handling."""
     try:
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
@@ -96,8 +90,7 @@ def fetch_json(url, params=None):
         return None
 
 
-def get_historical_volatility(currency="BTC"):
-    """Get 1 year of daily historical volatility."""
+def get_historical_volatility(currency="ETH"):
     url = f"{BASE_URL}/get_historical_volatility"
     data = fetch_json(url, params={"currency": currency})
     if data and "result" in data:
@@ -105,8 +98,7 @@ def get_historical_volatility(currency="BTC"):
     return []
 
 
-def get_instruments(currency="BTC", kind="option"):
-    """Get all option instruments (active + expired)."""
+def get_instruments(currency="ETH", kind="option"):
     url = f"{BASE_URL}/get_instruments"
     data = fetch_json(url, params={"currency": currency, "kind": kind})
     if data and "result" in data:
@@ -115,7 +107,6 @@ def get_instruments(currency="BTC", kind="option"):
 
 
 def get_tradingview_chart_data(instrument_name, start_timestamp, end_timestamp, resolution="1D"):
-    """Get OHLC data for an instrument."""
     url = f"{BASE_URL}/get_tradingview_chart_data"
     params = {
         "instrument_name": instrument_name,
@@ -136,7 +127,7 @@ def get_tradingview_chart_data(instrument_name, start_timestamp, end_timestamp, 
 
 
 # ==============================
-# CHECKPOINT HELPERS
+# CHECKPOINT
 # ==============================
 FIELDNAMES = [
     "timestamp", "datetime", "instrument_name", "strike", "option_type",
@@ -146,7 +137,6 @@ FIELDNAMES = [
 
 
 def save_checkpoint(results, filepath):
-    """Save results to CSV checkpoint."""
     if not results:
         return
     with open(filepath, "w", newline="", encoding="utf-8") as f:
@@ -156,7 +146,6 @@ def save_checkpoint(results, filepath):
 
 
 def load_checkpoint(filepath):
-    """Load results from checkpoint if it exists."""
     if not os.path.exists(filepath):
         return []
     with open(filepath, "r", newline="", encoding="utf-8") as f:
@@ -169,31 +158,27 @@ def load_checkpoint(filepath):
 # ==============================
 def main():
     print("=" * 60)
-    print("Deribit BTC Options Surface Builder")
+    print("Deribit ETH Options Surface Builder")
     print("=" * 60)
 
     os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
-    # Timestamps
     end_timestamp = int(time.time() * 1000)
     start_timestamp = end_timestamp - (365 * 24 * 3600 * 1000)
     print(f"Fetching data from {datetime.fromtimestamp(start_timestamp / 1000)}")
     print(f"                 to {datetime.fromtimestamp(end_timestamp / 1000)}")
 
-    # Step 1: Historical Volatility
     print("\n[1/4] Fetching historical volatility...")
-    hist_vol = get_historical_volatility("BTC")
+    hist_vol = get_historical_volatility("ETH")
     print(f"      Retrieved {len(hist_vol)} HV data points.")
 
-    # Step 2: Get all option instruments
-    print("\n[2/4] Fetching BTC option instruments...")
-    instruments = get_instruments("BTC", "option")
+    print("\n[2/4] Fetching ETH option instruments...")
+    instruments = get_instruments("ETH", "option")
     option_instruments = [i for i in instruments if i.get("kind") == "option"]
     print(f"      Found {len(option_instruments)} option instruments.")
 
-    # Step 3: Fetch BTC-PERPETUAL (underlying)
-    print("\n[3/4] Fetching BTC-PERPETUAL as underlying...")
-    perp_data = get_tradingview_chart_data("BTC-PERPETUAL", start_timestamp, end_timestamp, "1D")
+    print("\n[3/4] Fetching ETH-PERPETUAL as underlying...")
+    perp_data = get_tradingview_chart_data("ETH-PERPETUAL", start_timestamp, end_timestamp, "1D")
     if not perp_data or "ticks" not in perp_data:
         print("      ERROR: Could not fetch perpetual data. Exiting.")
         return
@@ -203,7 +188,6 @@ def main():
         perp_close_by_time[ts] = perp_data["close"][i]
     print(f"      Fetched {len(perp_close_by_time)} underlying price points.")
 
-    # Step 4: Process each instrument
     print("\n[4/4] Processing instruments...")
     results = load_checkpoint(CHECKPOINT_FILE)
     already_done = set(r["instrument_name"] for r in results)
@@ -212,7 +196,6 @@ def main():
     processed = 0
     for instr in option_instruments:
         instrument_name = instr["instrument_name"]
-
         if instrument_name in already_done:
             continue
 
@@ -220,12 +203,10 @@ def main():
         option_type = instr["option_type"]
         expiry_timestamp = instr["expiration_timestamp"]
 
-        # Skip if expired before our window
         if expiry_timestamp < start_timestamp:
             processed += 1
             continue
 
-        # Fetch option OHLC
         option_data = get_tradingview_chart_data(
             instrument_name, start_timestamp, end_timestamp, "1D"
         )
@@ -234,7 +215,6 @@ def main():
             processed += 1
             continue
 
-        # Align with underlying
         for i, ts in enumerate(option_data["ticks"]):
             if ts not in perp_close_by_time:
                 continue
@@ -282,11 +262,9 @@ def main():
 
     print(f"\n      Processed {processed} instruments. Total rows: {len(results)}")
 
-    # Save final output
     save_checkpoint(results, OUTPUT_FILE)
     print(f"\n✅ Saved to {OUTPUT_FILE}")
 
-    # Cleanup checkpoint
     if os.path.exists(CHECKPOINT_FILE):
         os.remove(CHECKPOINT_FILE)
         print("✅ Checkpoint removed.")

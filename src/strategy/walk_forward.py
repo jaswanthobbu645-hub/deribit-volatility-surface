@@ -93,7 +93,7 @@ def walk_forward(rr_file, asset_name):
             net = (gross - COST_RT) * 100
 
             dS = exit_row['underlying_close'] - entry['underlying_close']
-            dIV = exit_row['implied_volatility_call'] - entry['implied_volatility_call']
+            dIV = exit_row['iv_new_call'] - entry['iv_new_call']
             hold = (exit_row['date'] - entry['date']).days
 
             trades.append({
@@ -101,10 +101,10 @@ def walk_forward(rr_file, asset_name):
                 'expiry': entry['expiry_date'],
                 'entry_rr': entry['rr'], 'exit_rr': exit_row['rr'],
                 'hold_days': hold, 'net_return_pct': net,
-                'delta_pnl': entry['delta'] * dS,
-                'gamma_pnl': 0.5 * entry['gamma'] * dS ** 2,
-                'vega_pnl': entry['vega'] * (dIV * 100),
-                'theta_pnl': entry['theta'] * hold,
+                'delta_pnl': entry['delta_new'] * dS,
+                'gamma_pnl': 0.5 * entry['gamma_new'] * dS ** 2,
+                'vega_pnl': entry['vega_new'] * (dIV * 100),
+                'theta_pnl': entry['theta_new'] * hold,
             })
 
     if len(trades) == 0:
@@ -125,5 +125,5 @@ def walk_forward(rr_file, asset_name):
 
 
 if __name__ == "__main__":
-    walk_forward('os.path.join(PROCESSED_DIR, 'BTC_rr_all_expiries.csv')', 'BTC')
-    walk_forward('os.path.join(PROCESSED_DIR, 'ETH_rr_all_expiries.csv')', 'ETH')
+    walk_forward(os.path.join(PROCESSED_DIR, 'BTC_rr_all_expiries.csv'), 'BTC')
+    walk_forward(os.path.join(PROCESSED_DIR, 'ETH_rr_all_expiries.csv'), 'ETH')

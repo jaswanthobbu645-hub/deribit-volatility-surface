@@ -19,9 +19,9 @@ CHARTS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "charts")
 # ==============================
 BASE_URL = "https://www.deribit.com/api/v2/public"
 RISK_FREE_RATE = 0.0
-CHECKPOINT_DIR = "C:/Users/jaswa/deribit_project/historical_scrape"
-OUTPUT_FILE = "C:/Users/jaswa/deribit_project/os.path.join(PROCESSED_DIR, 'ETH_surface_1y.csv')"
-CHECKPOINT_FILE = "C:/Users/jaswa/deribit_project/historical_scrape/checkpoint_eth.csv"
+CHECKPOINT_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "historical_scrape")
+OUTPUT_FILE = os.path.join(PROCESSED_DIR, 'ETH_surface_1y.csv')
+CHECKPOINT_FILE = os.path.join(CHECKPOINT_DIR, 'checkpoint_eth.csv')
 CHECKPOINT_INTERVAL = 100
 API_SLEEP = 0.1
 
