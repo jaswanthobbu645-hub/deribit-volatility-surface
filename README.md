@@ -1,5 +1,11 @@
 # Deribit BTC & ETH Volatility Surface Pipeline
 
+**Pipeline:** Deribit API → `src/data` (raw fetch) → `src/features` (IV/Greeks/SVI) → `src/strategy` (backtest) → `charts/` + `docs/` (reports)
+
+![BTC Vol Surface](charts/surface_3d.png)
+![Event Study](charts/event_study_final.png)
+
+
 A production-grade options analytics pipeline for Deribit BTC and ETH options, computing volatility surface metrics, fitting SVI curves, analyzing Fed events, and backtesting a skew mean-reversion strategy.
 
 ## Key Findings
@@ -12,7 +18,33 @@ A production-grade options analytics pipeline for Deribit BTC and ETH options, c
 
 4. **Skew mean-reversion works on BTC.** +15.61% net return, 57% win rate, 7 trades over 3 months.
 
+## Statistical Uncertainty on Win Rates
+
+Small-sample win rates are reported with 95% Wilson confidence intervals:
+
+```
+Confidence intervals for backtest win rates:
+
+  BTC in-sample (7 trades, 4 wins)
+    Point estimate: 57.1%  |  95% CI: [25.0%, 84.2%]
+
+  BTC walk-forward OOS (2 trades, 0 wins)
+    Point estimate: 0.0%  |  95% CI: [0.0%, 65.8%]
+
+  ETH in-sample (11 trades, 4 wins)
+    Point estimate: 36.4%  |  95% CI: [15.2%, 64.6%]
+
+  ETH walk-forward OOS (1 trade, 0 wins)
+    Point estimate: 0.0%  |  95% CI: [0.0%, 79.3%]
+```
+
+**Interpretation:** The 7-trade BTC in-sample win rate of 57% has a 95% CI 
+spanning [25.0%, 84.2%]. This is not statistically distinguishable from 50%. 
+The strategy requires a larger sample for reliable inference.
+
+
 ## Limitations
+ - **Test adaptation:** The original test_greeks.py was broken and removed; we have written new tests that match the current black_scholes.py module.
 
  - **Sample size:** The in-sample backtest has only 7 BTC trades. The 57% win rate has a 95% confidence interval of approximately ±30% — the true win rate could be anywhere from 27% to 87%. Walk-forward OOS has only 2 trades. This is not statistically significant.
  - **Data window:** Deribit's free API caps option history at ~90 days. Our 84-day window covers one regime (Jun-Sep 2026). Extrapolating to other regimes is not validated.

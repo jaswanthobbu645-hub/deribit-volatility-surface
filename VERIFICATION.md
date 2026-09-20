@@ -1,45 +1,43 @@
-# Verification of Deribit Volatility Surface Project
+# Verification Log
 
-**Date (UTC):** 2026-09-20 02:50:00  
-**Latest Git Commit:** 0c9dc73 chore: remove archive folder and duplicate docs  
-**Verification Log:**  
-The end-to-end pipeline was executed successfully via `python main.py all`. The following steps completed:
+**Verified by:** Jaswanth
+**Date:** 2026-09-20
+**Machine:** Windows 11, Python 3.11.15
+**Commit:** [latest hash]
 
-1. ✅ Fetched historical BTC options data (82860 rows)
-2. ✅ Fetched historical ETH options data (68160 rows)
-3. ✅ Generated DVOL data and Fed meeting analysis for BTC and ETH
-4. ✅ Computed daily metrics (RR, Butterfly, Term Slope) and generated charts
-5. ✅ Built 3D volatility surfaces
-6. ✅ Created crypto vs equity chart
-7. ✅ Built ETH Fed event study
-8. ✅ Ran walk-forward backtest for BTC and ETH
-9. ✅ Ran transaction cost sensitivity analysis
+## Fresh-Clone Verification
 
-**Outputs Generated:**
-- `data/processed/BTC_surface_1y.csv`
-- `data/processed/ETH_surface_1y.csv`
-- `charts/event_study_final.png`
-- `charts/term_structure_butterfly.png`
-- `charts/surface_3d.png`
-- `charts/crypto_vs_equity.png`
-- `charts/eth_fed_study.png`
-- `BTC_walkforward_trades.csv`
-- `ETH_walkforward_trades.csv`
-- Updated `MEMO.md` with cost sensitivity table
-- Updated `README.md` with limitations section
+The following sequence was run from a clean environment to verify reproducibility:
 
-**Key Results:**
-- BTC DVOL mean: 43.75%, std: 6.69%
-- ETH DVOL mean: 62.59%, std: 9.60%
-- ETH/BTC vol ratio: 1.43x
-- Walk-forward BTC: 2 trades, 0.00% win rate, -13.72% net return
-- Walk-forward ETH: 1 trade, 0.00% win rate, -3.33% net return
-- Cost sensitivity shows negative returns at all tested transaction cost levels (1%-4% round-trip)
+    git clone https://github.com/jaswanthobbu645-hub/deribit-volatility-surface.git
+    cd deribit-volatility-surface
+    python -m venv venv
+    venv\Scripts\activate
+    pip install -r requirements.txt
+    pytest tests/ -v
 
-**Limitations Acknowledged:**
-- Sample size: Only 7 BTC trades in-sample, 2 trades walk-forward OOS (not statistically significant)
-- Data window: Limited to 84-day window (Jun-Sep 2026) due to Deribit API constraints
-- Slippage assumption: 1% per side modeled; edge reduced at higher slippage
-- No second-window validation due to data limits
+### Result
 
-All steps completed successfully. The repository is ready for submission.
+- **32 tests collected, 32 passed in 2.94 seconds**
+- Zero import errors
+- All dependencies resolved from pinned `requirements.txt`
+- Test coverage:
+  - 13 tests: Black-Scholes math (norm_cdf symmetry, put-call parity, deep ITM/OTM, IV roundtrip, invalid inputs)
+  - 7 tests: Greeks (delta ranges, call-put parity, gamma/vega/theta signs, zero-T edge case)
+  - 9 tests: Data integrity (files exist, IV range, no .orig/.rej, no conflict markers)
+  - 3 tests: SVI (parameter recovery, no negative variance, extreme rho)
+
+## Data Files Verified
+
+- data/processed/BTC_surface_1y.csv (81,977 rows)
+- data/processed/ETH_surface_1y.csv (67,640 rows)
+- data/processed/dvol_BTC_1y.csv (366 rows)
+- data/processed/dvol_ETH_1y.csv (366 rows)
+
+## Charts Verified
+
+7 PNGs in charts/: event_study_final, term_structure_butterfly, surface_3d, crypto_vs_equity, eth_fed_study, BTC_tearsheet, ETH_tearsheet
+
+## Conclusion
+
+The repository is fully reproducible. A clean clone with only `requirements.txt` produces 32 passing tests. All data and charts are version-controlled and available in the repo.

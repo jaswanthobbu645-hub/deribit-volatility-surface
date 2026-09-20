@@ -1,3 +1,4 @@
+from svi import svi_total_variance, fit_svi
 import pandas as pd
 import numpy as np
 import matplotlib

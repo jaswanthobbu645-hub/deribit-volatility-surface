@@ -1,0 +1,14 @@
+## Confidence intervals for backtest win rates:
+
+  BTC in-sample (7 trades, 4 wins)
+    Point estimate: 57.1%  |  95% CI: [25.0%, 84.2%]
+
+  BTC walk-forward OOS (2 trades, 0 wins)
+    Point estimate: 0.0%  |  95% CI: [0.0%, 65.8%]
+
+  ETH in-sample (11 trades, 4 wins)
+    Point estimate: 36.4%  |  95% CI: [15.2%, 64.6%]
+
+  ETH walk-forward OOS (1 trade, 0 wins)
+    Point estimate: 0.0%  |  95% CI: [0.0%, 79.3%]
+
