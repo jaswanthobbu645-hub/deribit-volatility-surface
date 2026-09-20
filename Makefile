@@ -1,4 +1,4 @@
-.PHONY: install fetch-live fetch-historical fetch-dvol full-analysis backtest cost-sensitivity reproduce clean
+.PHONY: install fetch-live fetch-historical fetch-dvol full-analysis backtest cost-sensitivity reproduce clean test test-verbose
 
 install:
 	pip install -r requirements.txt
@@ -25,6 +25,12 @@ cost-sensitivity:
 
 reproduce: fetch-historical fetch-dvol full-analysis backtest cost-sensitivity
 	@echo "Reproduction complete. Check charts/ and data/processed/"
+
+test:
+	pytest tests/ -q
+
+test-verbose:
+	pytest tests/ -v
 
 clean:
 	find . -name "*.pyc" -delete

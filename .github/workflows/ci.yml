@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  smoke-test:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -19,30 +19,12 @@ jobs:
           python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run pytest suite
+        run: pytest tests/ -v
 
       - name: Verify imports
-        run: |
-          python -c "import pandas, numpy, scipy, matplotlib, requests, ccxt; print('All imports OK')"
-
-      - name: Verify data files
-        run: |
-          python -c "
-          import os
-          required = [
-              'data/processed/BTC_surface_1y.csv',
-              'data/processed/ETH_surface_1y.csv',
-              'data/processed/dvol_BTC_1y.csv',
-              'data/processed/dvol_ETH_1y.csv',
-              'charts/event_study_final.png',
-              'charts/surface_3d.png',
-              'charts/crypto_vs_equity.png',
-              'charts/term_structure_butterfly.png',
-              'charts/eth_fed_study.png',
-              'charts/BTC_tearsheet.png',
-              'charts/ETH_tearsheet.png',
-          ]
-          for f in required:
-              assert os.path.exists(f), f'Missing: {f}'
-          print(f'All {len(required)} required files present')
-          "
+        run: python -c "import pandas, numpy, scipy, matplotlib, requests, ccxt; print('Imports OK')"
