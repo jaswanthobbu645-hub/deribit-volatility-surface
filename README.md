@@ -44,6 +44,12 @@ The strategy requires a larger sample for reliable inference.
 
 
 ## Limitations
+- **Backtest sample too small:** The option surface covers only 84 days
+  (Deribit deletes expired option data after ~90 days). The walk-forward
+  produces only 2-3 OOS trades, which is insufficient for statistical
+  inference. The DVOL event study covers 1 full year, but the backtest
+  is limited to 84 days. Fixing this requires Tardis.dev full access
+  (~$700/month) for 2+ years of option history.
  - **Test adaptation:** The original test_greeks.py was broken and removed; we have written new tests that match the current black_scholes.py module.
 
  - **Sample size:** The in-sample backtest has only 7 BTC trades. The 57% win rate has a 95% confidence interval of approximately ±30% — the true win rate could be anywhere from 27% to 87%. Walk-forward OOS has only 2 trades. This is not statistically significant.

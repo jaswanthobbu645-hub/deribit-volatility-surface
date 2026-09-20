@@ -62,7 +62,7 @@ def walk_forward(rr_file, asset_name):
     df = df.sort_values(['expiry_date', 'date']).reset_index(drop=True)
 
     unique_dates = sorted(df['date'].unique())
-    TRAIN, TEST = 60, 20
+    TRAIN, TEST = 30, 10
     trades = []
     COST_RT = 0.02
 

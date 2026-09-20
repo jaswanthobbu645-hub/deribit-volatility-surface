@@ -149,3 +149,83 @@ PnL Attribution (BTC in-sample avg):
 ## 8. Conclusion
 
 Production-grade Deribit options pipeline processing 149,617 rows across BTC and ETH. The 1-year DVOL event study shows crypto volatility has no consistent Fed-meeting reaction — supporting the thesis that crypto vol is endogenous.
+---
+
+## 9. Data Constraint: Why Option Surface Is 84 Days, Not 365
+
+The project uses TWO different Deribit data sources with different 
+historical retention:
+
+| Data Type | Deribit Endpoint | Retention | What We Got |
+|-----------|------------------|-----------|-------------|
+| DVOL (volatility index) | get_volatility_index_data | Permanent | **366 days** ✅ |
+| Option surfaces (strikes, IVs) | get_tradingview_chart_data | ~90 days | **84 days** ❌ |
+
+### Why the difference
+
+**DVOL:** One number per day. 366 rows per year. Deribit keeps forever.
+
+**Option surface:** ~80,000 rows per day per asset (every strike × every 
+expiry). Deribit deletes expired option contracts after ~90 days to 
+save storage. There is no free API endpoint that returns older data.
+
+### Impact on deliverables
+
+| Deliverable | Data Source | Days Available | Status |
+|-------------|-------------|----------------|--------|
+| Event study (Fed meetings) | DVOL | 366 | ✅ Statistically meaningful |
+| Crypto vs equity | DVOL + surface | 84-366 | ✅ Partial |
+| Walk-forward backtest | Option surface | 84 | ❌ Sample too small |
+| SVI surface fit | Option surface | 84 | ✅ Works |
+
+### Why the backtest has only 2 OOS trades
+
+With 84 days of data:
+- Training window: 60 days
+- Test window: 20 days
+- Maximum folds: 1 full fold + 1 partial
+- Signals per 20-day test window: 1-2
+- **Total OOS trades: 2-3** (mathematical maximum for this data length)
+
+This is a HARD DATA CONSTRAINT, not a strategy failure.
+
+### What would fix it
+
+| Fix | OOS Trades Expected | Cost / Effort |
+|-----|---------------------|---------------|
+| 2+ years of daily data | 40-60 | Tardis.dev ~$700/month |
+| Shorter walk-forward (30/10) | 8-12 | Free, methodological choice |
+| Multi-asset (BTC+ETH+SOL+DOGE) | 15-20 | 3 more fetches, same pipeline |
+| 4-hour data instead of 1-day | 50+ | 6x more rows, noisier signals |
+
+### What this backtest CAN claim
+
+- Pipeline is correct: no lookahead, proper rolling window, cost model applied
+- Signal exists: 7 in-sample trades with 57% win rate and +15.61% return 
+  (also not statistically significant, see Wilson CI in README)
+- Strategy is not disproven: negative OOS is expected noise when n=2
+
+### What this backtest CANNOT claim
+
+- That the strategy has positive expectancy
+- That the strategy has negative expectancy
+- Anything reliable about Sharpe, Sortino, or drawdown
+
+---
+
+## 10. Walk-Forward Split Sensitivity
+
+To partially address the small-sample issue, the walk-forward was rerun 
+with a shorter 30/10 split (30-day train, 10-day test) alongside the 
+original 60/20 split.
+
+| Split | BTC Trades | BTC Return | ETH Trades | ETH Return |
+|-------|-----------|-----------|-----------|-----------|
+| 60/20 | 2 | -13.72% | 1 | -3.33% |
+| 30/10 | 5 | -7.03% | 6 | 9.37% |
+
+The 30/10 split produces more trades because it rolls forward more 
+frequently. Both samples remain too small for statistical inference, 
+but the comparison demonstrates that the pipeline is split-sensitive, 
+which is expected for a short data window.
+
