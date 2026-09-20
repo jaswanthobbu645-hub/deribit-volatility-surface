@@ -10,6 +10,33 @@ A production-grade options analytics pipeline for Deribit BTC and ETH options, c
 
 ## Key Findings
 
+## Visualizations
+
+### 1-Year DVOL Event Study (8 Fed Meetings)
+![Fed Event Study](charts/event_study_final.png)
+*Crypto volatility shows no consistent Fed reaction (BTC: 5 up / 3 down, ETH: 4 up / 4 down).*
+
+### BTC Volatility Surface (Strike × Expiry × IV)
+![3D Surface](charts/surface_3d.png)
+*Smile structure across the front 3 expiries.*
+
+### 25Δ Risk Reversal vs SPX
+![Crypto vs Equity](charts/crypto_vs_equity.png)
+*BTC 25Δ skew is 2.23x more volatile than SPX.*
+
+### Term Structure Slope + Butterfly
+![Term Structure](charts/term_structure_butterfly.png)
+
+### ETH Fed Event Study
+![ETH Fed](charts/eth_fed_study.png)
+
+### BTC Tearsheet
+![BTC Tearsheet](charts/BTC_tearsheet.png)
+
+### ETH Tearsheet
+![ETH Tearsheet](charts/ETH_tearsheet.png)
+
+
 1. **Crypto has no consistent Fed-meeting vol reaction.** Across 8 Fed meetings over 1 year, BTC DVOL rose 5 times and fell 3 times (mean +0.49%, std 2.28%). ETH: 4 up / 4 down. Different from equity markets where VIX reliably spikes.
 
 2. **ETH is 1.43x more volatile than BTC.** Mean DVOL: ETH 62.59% vs BTC 43.72%.
@@ -43,6 +70,32 @@ spanning [25.0%, 84.2%]. This is not statistically distinguishable from 50%.
 The strategy requires a larger sample for reliable inference.
 
 
+## Methodology
+
+### Mathematical Detail
+
+**Black-Scholes Formula** (`src/features/black_scholes.py`):
+
+Call: C = S·N(d1) - K·e^(-rT)·N(d2)
+Put:  P = K·e^(-rT)·N(-d2) - S·N(-d1)
+
+where d1 = [ln(S/K) + (r + σ²/2)T] / (σ√T), d2 = d1 - σ√T.
+
+**IV Inversion:** Bisection method over [0.01, 5.0], 50 iterations, tolerance 1e-4.
+Chosen over Newton-Raphson for numerical stability on noisy crypto option data.
+
+**Greeks:**
+- Delta_call = N(d1), Delta_put = N(d1) - 1
+- Gamma = N'(d1) / (S·σ·√T)
+- Vega = S·N'(d1)·√T / 100
+- Theta = -S·N'(d1)·σ / (2√T) / 365
+
+**SVI Fit** (`src/features/svi.py`):
+w(k) = a + b·(ρ·(k-m) + √((k-m)² + σ²))
+where w = IV²·T, k = ln(K/S). Constraints: b ≥ 0, |ρ| < 1, σ > 0.
+
+**Risk-free rate:** 0% (crypto convention, 24/7 market).
+
 ## Limitations
 - **Backtest sample too small:** The option surface covers only 84 days
   (Deribit deletes expired option data after ~90 days). The walk-forward
@@ -56,6 +109,6 @@ The strategy requires a larger sample for reliable inference.
  - **Data window:** Deribit's free API caps option history at ~90 days. Our 84-day window covers one regime (Jun-Sep 2026). Extrapolating to other regimes is not validated.
  - **Slippage assumption:** 1% per side is modeled. At 2x slippage (2% per side), the strategy's edge would be materially reduced. See sensitivity table in MEMO.md.
  - **No second-window validation:** A proper out-of-sample test on a different quarter/regime has not been performed due to data limits.
- 
 
+ 
 ## Repository Structure
