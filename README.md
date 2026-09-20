@@ -110,17 +110,15 @@ where w = IV²·T, k = ln(K/S). Constraints: b ≥ 0, |ρ| < 1, σ > 0.
 **Risk-free rate:** 0% (crypto convention, 24/7 market).
 
 ## Limitations
-- **Backtest sample too small:** The option surface covers only 84 days
-  (Deribit deletes expired option data after ~90 days). The walk-forward
-  produces only 2-3 OOS trades, which is insufficient for statistical
-  inference. The DVOL event study covers 1 full year, but the backtest
-  is limited to 84 days. Fixing this requires Tardis.dev full access
-  (~$700/month) for 2+ years of option history.
- - **Test adaptation:** The original test_greeks.py was broken and removed; we have written new tests that match the current black_scholes.py module.
 
- - **Sample size:** The in-sample backtest has only 7 BTC trades. The 57% win rate has a 95% confidence interval of approximately ±30% — the true win rate could be anywhere from 27% to 87%. Walk-forward OOS has only 2 trades. This is not statistically significant.
- - **Data window:** Deribit's free API caps option history at ~90 days. Our 84-day window covers one regime (Jun-Sep 2026). Extrapolating to other regimes is not validated.
- - **Slippage assumption:** 1% per side is modeled. At 2x slippage (2% per side), the strategy's edge would be materially reduced. See sensitivity table in MEMO.md.
- - **No second-window validation:** A proper out-of-sample test on a different quarter/regime has not been performed due to data limits.
+- **Sample size:** The in-sample backtest has only 7 BTC trades. Wilson 95% CI on the 57% win rate is [25.0%, 84.2%] — the interval includes 50%, so the win rate is not statistically distinguishable from random chance. Walk-forward OOS has only 2 trades on the 60/20 split. This is not statistically significant.
+
+- **Data window:** Deribit's free API caps option history at ~90 days. The option surface covers 84 days (Jun-Sep 2026), one regime only. The DVOL index covers 1 full year. Extending the surface to 2+ years requires Tardis.dev full access (~$700/month).
+
+- **Backtest split sensitivity:** On the original 60/20 walk-forward, OOS returns were BTC -13.72% (n=2) and ETH -3.33% (n=1). On the extended 30/10 split, BTC -7.03% (n=5) and ETH +9.37% (n=6). The strategy is split-sensitive, which is expected for an 84-day window.
+
+- **Slippage assumption:** 1% per side is modeled. At 2x slippage (2% per side), the strategy's edge is materially reduced. See cost sensitivity table in MEMO.md.
+
+- **No second-window validation:** A proper out-of-sample test on a different quarter/regime has not been performed due to data limits. This is documented as the primary barrier to confirming the strategy's edge.
 
 ## Repository Structure
