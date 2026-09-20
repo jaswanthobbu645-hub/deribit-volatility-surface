@@ -35,6 +35,12 @@ A production-grade options analytics pipeline for Deribit BTC and ETH options, c
 
 ### ETH Tearsheet
 ![ETH Tearsheet](charts/ETH_tearsheet.png)
+### Greeks and IV Smile (Delta Space)
+![Greeks Surface](charts/greeks_surface.png)
+
+### SVI Fit Diagnostics (Front 3 Expiries)
+![SVI Diagnostic](charts/svi_diagnostic.png)
+*Raw market IV (blue) vs fitted SVI (red). Constraints b≥0, |ρ|<1 prevent butterfly arbitrage.*
 
 
 1. **Crypto has no consistent Fed-meeting vol reaction.** Across 8 Fed meetings over 1 year, BTC DVOL rose 5 times and fell 3 times (mean +0.49%, std 2.28%). ETH: 4 up / 4 down. Different from equity markets where VIX reliably spikes.
