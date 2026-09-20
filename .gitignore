@@ -31,3 +31,10 @@ update_paths.py
 *.tmp
 *_checkpoint.csv
 checkpoint*.csv
+# CRITICAL: never commit venv
+venv*/
+.venv*/
+venv_temp/
+*.bak
+temp
+wilson_output.txt
