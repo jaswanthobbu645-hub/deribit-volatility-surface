@@ -49,7 +49,7 @@ A production-grade options analytics pipeline for Deribit BTC and ETH options, c
 
 ### SVI Fit Diagnostics (Front 3 Expiries)
 ![SVI Diagnostic](charts/svi_diagnostic.png)
-*Raw market IV (blue) vs fitted SVI (red). Constraints b≥0, |ρ|<1 prevent butterfly arbitrage.*
+*Raw market IV (blue) vs fitted SVI (red). Constraints b≥0, |ρ|&lt;1 prevent butterfly arbitrage.*
 
 ### Arbitrage Violation Check
 ![Arbitrage Check](charts/arbitrage_check.png)
@@ -105,7 +105,7 @@ Chosen over Newton-Raphson for numerical stability on noisy crypto option data.
 
 **SVI Fit** (`src/features/svi.py`):
 w(k) = a + b·(ρ·(k-m) + √((k-m)² + σ²))
-where w = IV²·T, k = ln(K/S). Constraints: b ≥ 0, |ρ| < 1, σ > 0.
+where w = IV²·T, k = ln(K/S). Constraints: b ≥ 0, |ρ| &lt; 1, σ > 0.
 
 **Risk-free rate:** 0% (crypto convention, 24/7 market).
 
