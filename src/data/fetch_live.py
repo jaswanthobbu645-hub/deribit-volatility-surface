@@ -1,4 +1,4 @@
-import ccxt
+﻿import ccxt
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
@@ -13,7 +13,7 @@ TRADES_DIR = os.path.join(DATA_DIR, "trades")
 CHARTS_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "charts")
 
 
-print("🚀 Running Daily Deribit Metrics Update...")
+print("[RUN] Running Daily Deribit Metrics Update...")
 
 # --- 1. FETCH DATA ---
 exchange = ccxt.deribit()
@@ -32,7 +32,7 @@ if not underlying_price:
     spot_ticker = exchange.fetch_ticker('BTC/USDC')
     underlying_price = spot_ticker['last']
 
-print(f"📍 Current BTC Price: ${underlying_price:,.0f}")
+print(f"[PRICE] Current BTC Price: ${underlying_price:,.0f}")
 
 # Parse raw data into DataFrame
 data = []
@@ -72,8 +72,8 @@ for symbol, ticker in tickers.items():
     })
 
 df = pd.DataFrame(data)
-df.to_csv(os.path.join(RAW_DIR, f'btc_options_{datetime.now().strftime(\"%Y%m%d\")}.csv'), index=False)
-print(f"✅ Saved {len(df)} options to daily file.")
+df.to_csv(os.path.join(RAW_DIR, f'btc_options_{datetime.now().strftime("%Y%m%d")}.csv'), index=False)
+print(f"[OK] Saved {len(df)} options to daily file.")
 
 
 # --- 2. COMPUTE 25-DELTA SKEW (Manual Black-Scholes) ---
@@ -140,10 +140,10 @@ if not call_25.empty and not put_25.empty:
 
     history.to_csv(history_file, index=False)
 
-    print(f"📊 Metrics Summary:")
+    print(f"[METRICS] Metrics Summary:")
     print(f"   ATM IV: {(c_iv + p_iv) / 2:.2f}%")
     print(f"   Risk Reversal: {risk_reversal:.2f}%")
     print(f"   Call Strike: {c_strike}, Put Strike: {p_strike}")
-    print(f"✅ Appended to '{history_file}'")
+    print(f"[OK] Appended to '{history_file}'")
 else:
-    print("❌ Could not compute 25-delta skew today.")
+    print("[FAIL] Could not compute 25-delta skew today.")
