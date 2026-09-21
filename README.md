@@ -113,7 +113,7 @@ where w = IV²·T, k = ln(K/S). Constraints: b ≥ 0, |ρ| &lt; 1, σ > 0.
 
 - **Sample size:** The in-sample backtest has only 7 BTC trades. Wilson 95% CI on the 57% win rate is [25.0%, 84.2%] — the interval includes 50%, so the win rate is not statistically distinguishable from random chance. Walk-forward OOS has only 2 trades on the 60/20 split. This is not statistically significant.
 
-- **Data window:** Deribit's free API caps option history at ~90 days. The option surface covers 84 days (Jun-Sep 2026), one regime only. The DVOL index covers 1 full year. Extending the surface to 2+ years requires Tardis.dev full access (~$700/month).
+- **Data window:** Deribit's free API caps option history at approx. 90 days. The option surface covers 84 days (Jun-Sep 2026), one regime only. The DVOL index covers 1 full year. Extending the surface to 2+ years requires Tardis.dev full access (approx. $700/month).
 
 - **Backtest split sensitivity:** On the original 60/20 walk-forward, OOS returns were BTC -13.72% (n=2) and ETH -3.33% (n=1). On the extended 30/10 split, BTC -7.03% (n=5) and ETH +9.37% (n=6). The strategy is split-sensitive, which is expected for an 84-day window.
 
