@@ -110,6 +110,7 @@ where w = IV²·T, k = ln(K/S). Constraints: b ≥ 0, |ρ| &lt; 1, σ > 0.
 **Risk-free rate:** 0% (crypto convention, 24/7 market).
 
 ## Limitations
+- **Statistical significance:** Fed meeting DVOL changes are not statistically distinguishable from zero (t-test p > 0.05). Bootstrap simulation of the backtest shows the 95% CI on mean return includes zero. See MEMO Section 11 for full analysis.
 
 - **Sample size:** The in-sample backtest has only 7 BTC trades. Wilson 95% CI on the 57% win rate is [25.0%, 84.2%] — the interval includes 50%, so the win rate is not statistically distinguishable from random chance. Walk-forward OOS has only 2 trades on the 60/20 split. This is not statistically significant.
 

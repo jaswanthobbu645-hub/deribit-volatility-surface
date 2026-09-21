@@ -139,6 +139,49 @@ PnL Attribution (BTC in-sample avg):
 - **Charts:** charts/ (7 PNGs)
 - **Reports:** README.md, MEMO.md, TEARSHEET.md, DATA_DICTIONARY.md
 
+## 11. Statistical Significance Testing
+
+### 11.1 Fed Meeting DVOL T-Test
+
+======================================================================
+T-TEST: FED MEETING DVOL CHANGES
+======================================================================
+
+BTC:
+  N meetings:       8
+  Mean change:      0.4860
+  Std change:       2.2754
+  T-statistic:      0.5651
+  P-value:          0.5896
+  Result:           NOT SIGNIFICANT
+
+ETH:
+  N meetings:       8
+  Mean change:      0.1941
+  Std change:       3.0081
+  T-statistic:      0.1707
+  P-value:          0.8693
+  Result:           NOT SIGNIFICANT
+
+### 11.2 Bootstrap Trade Simulation
+
+======================================================================
+BOOTSTRAP SIMULATION
+======================================================================
+
+Observed: 2 trades, mean=-6.8616%, std=1.0691%
+
+Bootstrap 10,000 sims of 100-trade samples:
+  Expected mean return:    -6.8611%
+  95% CI mean return:      [-7.0754%, -6.6477%]
+  P(positive mean return): 0.00%
+  Expected Sharpe:         -45.6100
+  95% CI Sharpe:           [-47.7605, -44.8329]
+
+  Trades/year estimate:    8.7
+  Days to reach 50 trades: 2100
+
+
 ## 7. Next Steps
 
 1. Extend historical data via Tardis.dev full access
