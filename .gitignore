@@ -42,3 +42,6 @@ wilson_output.txt
 # Daily raw options snapshots (regenerated daily)
 data/raw/btc_options_*.csv
 data/raw/eth_options_*.csv
+
+# Daily run logs (regenerated)
+logs/
